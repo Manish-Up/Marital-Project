@@ -1,0 +1,35 @@
+<?php
+    if(!isset($_COOKIE["login"])){
+		header("location:login.php");
+    }
+	else{
+		include("db.php");
+		$email=$_COOKIE["login"];
+		if(empty($_POST["fname"]) || empty($_POST["lname"]) || empty($_POST["birth"]) || empty($_POST["gender"]) || empty($_POST["caste"]) || empty($_POST["religion"]) || empty($_POST["occupation"]) || empty($_POST["city"]) || empty($_POST["state"]) || empty($_POST["country"])){
+			header("location:edit_profile.php?empty=1");
+		}
+		else{
+			$fname=$_POST["fname"];
+			$lname=$_POST["lname"];
+			$gender=$_POST["gender"];
+			$birth=$_POST["birth"];
+			$caste=$_POST["caste"];
+			$religion=$_POST["religion"];
+			$occupation=$_POST["occupation"];
+			$city=$_POST["city"];
+			$state=$_POST["state"];
+			$country=$_POST["country"];
+			$code=$_REQUEST["id"];
+			$target="profile/";
+			$target=$target.$code.".jpg";
+			if(move_uploaded_file($_FILES['photo']['tmp_name'],$target)){
+				if(mysqli_query($conn,"update detail set fname='$fname',lname='$lname',gender='$gender',caste='$caste',religion='$religion',occupation='$occupation',birth='$birth',city='$city',state='$state',country='$country' where email='$email'")>0){
+					header("location:edit_profile.php?success=1");
+				}	
+				else{
+					header("location:edit_profile.php?again=1");			
+				}
+			}
+		}	
+	}		
+?>
